@@ -21,11 +21,12 @@ if [ -n "${VMESS_ALTERID}" ]; then
 fi
 
 if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
-  echo '[Debug] Start get cert:'
-  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www
-  echo '[Debug] Start install cert:'
-  /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --reloadcmd "nginx -s reload"
-  #openssl dhparam -out /etc/nginx/cert/dhparam.pem 2048
+  echo '[Info] Start set Weak Diffie-Hellman and the Logjam Attack:'
+  openssl dhparam -out /etc/nginx/cert/dhparam.pem 4096
+  echo '[Info] Start get cert:'
+  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --keylength ec-384
+  echo '[Info] Start install cert:'
+  /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --capath /etc/nginx/auth-acme/ca.pem --reloadcmd "nginx -s reload" --ecc
 fi
 
 echo $(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"/v2ray"}}}') > /etc/v2ray/config.json
@@ -40,3 +41,6 @@ fi
 
 echo '[Debug] Dump config.json:'
 echo $(cat /etc/v2ray/config.json)
+
+echo "[Success] Your vmess ID is: $(cat /etc/v2ray/config.json | jq -r '.inbounds[0].settings.clients[0].id')"
+echo "[Success] Your vmess Alter ID is: $(cat /etc/v2ray/config.json | jq -r '.inbounds[0].settings.clients[0].alterId')"
