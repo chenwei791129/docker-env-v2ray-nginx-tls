@@ -67,10 +67,10 @@ spec:
 ```
 ### Necessary Environment Variables
 * `VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/)
+* `VMESS_HTTP2_DOMAIN` your domain (string)
 
 ### Option Environment Variables
 * `VMESS_ALTERID` (integer,default: 64)
-* `VMESS_HTTP2_DOMAIN` your domain (string)
 * `DENY_LAN_ACCESS` if set true, v2ray client can't access lan ip (boolean,default: "true")
 * `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
 
