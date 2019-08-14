@@ -66,12 +66,13 @@ spec:
           containerPort: 80
 ```
 ### Necessary Environment Variables
-* `[VMess] VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/)
+* `VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/)
 
 ### Option Environment Variables
-* `[VMess] VMESS_ALTERID` (integer,default: 64)
-* `[VMess] VMESS_HTTP2_DOMAIN` your domain (string)
+* `VMESS_ALTERID` (integer,default: 64)
+* `VMESS_HTTP2_DOMAIN` your domain (string)
 * `DENY_LAN_ACCESS` if set true, v2ray client can't access lan ip (boolean,default: "true")
+* `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
 
 ## Related Projects
 - [v2ray/official](https://hub.docker.com/r/v2ray/official)
