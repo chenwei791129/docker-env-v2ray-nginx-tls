@@ -1,12 +1,10 @@
 #!/bin/sh
 
-if [ -f /etc/v2ray/config.json ]; then
-    rm /etc/v2ray/config.json
-fi
+cp -f /tmp/default.conf /etc/nginx/conf.d/default.conf
+nginx
 
-cp /etc/v2ray/config.json-default /etc/v2ray/config.json
-cp /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
-cp /tmp/default.conf /etc/nginx/conf.d/default.conf
+cp -f /etc/v2ray/config.json-default /etc/v2ray/config.json
+cp -f /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
 
 # Setup vmess
 echo '[Info] Protocal is VMess.'
@@ -24,7 +22,7 @@ fi
 
 if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
   echo '[Debug] Start get cert:'
-  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --debug
+  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www
   echo '[Debug] Start install cert:'
   /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --reloadcmd "nginx -s reload"
   #openssl dhparam -out /etc/nginx/cert/dhparam.pem 2048
