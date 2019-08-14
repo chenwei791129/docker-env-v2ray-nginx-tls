@@ -1,0 +1,7 @@
+{
+  "inbounds": [],
+  "outbounds": [{
+    "protocol": "freedom",
+    "settings": {}
+  }]
+}
