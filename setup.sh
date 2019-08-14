@@ -36,7 +36,7 @@ if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! 
   echo '[Info] Start get cert:'
   /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --keylength ec-384
   echo '[Info] Start install cert:'
-  /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --capath /etc/nginx/auth-acme/ca.pem --reloadcmd "nginx -s reload" --ecc
+  /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --capath /etc/nginx/cert/ca.pem --reloadcmd "nginx -s reload" --ecc
 fi
 
 echo '[Debug] Dump config.json:'
