@@ -5,6 +5,7 @@ if [ -f /etc/v2ray/config.json ]; then
 fi
 
 cp /etc/v2ray/config.json-default /etc/v2ray/config.json
+cp /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
 
 # Setup vmess
 echo '[Info] Protocal is VMess.'
@@ -21,9 +22,11 @@ if [ -n "${VMESS_ALTERID}" ]; then
 fi
 
 if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
-  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www
+  echo '[Debug] Start get cert:'
+  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --debug
+  echo '[Debug] Start install cert:'
   /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --reloadcmd "nginx -s reload"
-  openssl dhparam -out /etc/nginx/cert/dhparam.pem 2048
+  #openssl dhparam -out /etc/nginx/cert/dhparam.pem 2048
 fi
 
 echo $(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"/"}}}') > /etc/v2ray/config.json
