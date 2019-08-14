@@ -76,6 +76,8 @@ spec:
 
 ## Related Projects
 - [v2ray/official](https://hub.docker.com/r/v2ray/official)
+- [Neilpang/acme.sh](https://github.com/Neilpang/acme.sh)
+- [nginx/nginx](https://github.com/nginx/nginx)
 
 ## License
 The repository is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
