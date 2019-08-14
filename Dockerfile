@@ -13,7 +13,6 @@ COPY index.html /www/
 
 RUN apk add --update jq curl openssl socat nginx && \
     curl https://get.acme.sh | sh && \
-#    adduser -D -g 'nginx' nginx && \
     mkdir -p /etc/nginx/cert && \
     mkdir -p /run/nginx && \
     chown -R nginx:nginx /www
