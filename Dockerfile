@@ -3,7 +3,8 @@ FROM v2ray/official
 ENV VMESS_ID= \
     VMESS_ALTERID=64 \
     VMESS_HTTP2_DOMAIN= \
-    DENY_LAN_ACCESS=true
+    DENY_LAN_ACCESS=true \
+    DHPARAM_LENGTH=2048
 
 COPY config.json /etc/v2ray/config.json-default
 COPY setup.sh /tmp/

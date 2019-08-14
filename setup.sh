@@ -32,7 +32,7 @@ fi
 
 if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
   echo '[Info] Start set Weak Diffie-Hellman and the Logjam Attack:'
-  openssl dhparam -out /etc/nginx/cert/dhparam.pem 4096
+  openssl dhparam -out /etc/nginx/cert/dhparam.pem ${DHPARAM_LENGTH}
   echo '[Info] Start get cert:'
   /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --keylength ec-384
   echo '[Info] Start install cert:'
