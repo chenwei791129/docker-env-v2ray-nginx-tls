@@ -6,6 +6,7 @@ fi
 
 cp /etc/v2ray/config.json-default /etc/v2ray/config.json
 cp /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
+cp /tmp/default.conf /etc/nginx/conf.d/default.conf
 
 # Setup vmess
 echo '[Info] Protocal is VMess.'
@@ -29,7 +30,7 @@ if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! 
   #openssl dhparam -out /etc/nginx/cert/dhparam.pem 2048
 fi
 
-echo $(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"/"}}}') > /etc/v2ray/config.json
+echo $(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"/v2ray"}}}') > /etc/v2ray/config.json
 
 if [ ${DENY_LAN_ACCESS} == true ]; then
   echo '[Info] Apply DENY LAN ACCESS.'

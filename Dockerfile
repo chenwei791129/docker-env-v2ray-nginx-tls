@@ -7,13 +7,13 @@ ENV VMESS_ID= \
 
 COPY config.json /etc/v2ray/config.json-default
 COPY setup.sh /tmp/
-COPY default.conf /etc/nginx/conf.d/default.conf
 COPY v2ray-nginx-h2.conf /tmp/
+COPY default.conf /tmp/
+COPY index.html /www/
 
 RUN apk add --update jq curl openssl socat nginx && \
     curl https://get.acme.sh | sh && \
 #    adduser -D -g 'nginx' nginx && \
-    mkdir /www && \
     mkdir /etc/nginx/cert && \
     mkdir /run/nginx && \
     chown -R nginx:nginx /www
