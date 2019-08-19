@@ -1,17 +1,17 @@
-# env-v2ray-nginx-h2 for docker
+# env-v2ray-nginx-tls for docker
 ## How to use
-[![This image on DockerHub](https://img.shields.io/docker/pulls/awei/env-v2ray-nginx-h2.svg)](https://hub.docker.com/r/awei/env-v2ray-nginx-h2/)
+[![This image on DockerHub](https://img.shields.io/docker/pulls/awei/env-v2ray-nginx-tls.svg)](https://hub.docker.com/r/awei/env-v2ray-nginx-tls/)
 
-[View on Docker Hub](https://hub.docker.com/r/awei/env-v2ray-nginx-h2)
+[View on Docker Hub](https://hub.docker.com/r/awei/env-v2ray-nginx-tls)
 
 ```shell
-$ docker run -d -p <PORT>:<DOCKER-PORT> -e VMESS_ID="<UUID>" -e VMESS_HTTP2_DOMAIN="<DOMAIN>" awei/env-v2ray-nginx-h2
+$ docker run -d -p <PORT>:<DOCKER-PORT> -e VMESS_ID="<UUID>" -e VMESS_HTTP2_DOMAIN="<DOMAIN>" awei/env-v2ray-nginx-tls
 ```
-e.g. (VMess+nginx+tls+h2) need 80 port to get let's encrypt cert
+e.g. need 80 port to get let's encrypt cert
 ```shell
-$ docker run -d -p 80:80 -p 443:443 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e VMESS_HTTP2_DOMAIN="www.demo.com" awei/env-v2ray-nginx-h2
+$ docker run -d -p 80:80 -p 443:443 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e VMESS_HTTP2_DOMAIN="www.demo.com" awei/env-v2ray-nginx-tls
 ```
-deploy to kubernetes example:
+deploy to kubernetes example (Need to match port forwarding 80 port to 30080 port):
 ```yaml
 apiVersion: v1
 kind: Service
@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
       - name: v2ray-1
-        image: awei/env-v2ray-nginx-h2:latest
+        image: awei/env-v2ray-nginx-tls:latest
         env:
         - name: VMESS_ID
           value: "39de9465-16a5-499a-93ef-d05e946214ce"
