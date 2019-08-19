@@ -60,7 +60,7 @@ spec:
         image: awei/env-v2ray-nginx-tls:latest
         env:
         - name: VMESS_ID
-          value: "39de9465-16a5-499a-93ef-d05e946214ce"
+          value: "877e125d-1ef3-40ef-9329-b7ec62c1072c"
         - name: DENY_LAN_ACCESS
           value: "true"
         ports:
@@ -69,6 +69,13 @@ spec:
         - name: http
           containerPort: 80
 ```
+## v2ray client special settings
+* `Port` 443 (recommend)
+* `Network` ws
+* `Host` <DOMAIN>
+* `Path` /v2ray
+* `Transport layer security` tls
+
 ### Necessary Environment Variables
 * `VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/)
 * `VMESS_HTTP2_DOMAIN` your domain (string)
