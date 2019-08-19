@@ -73,6 +73,7 @@ spec:
 * `VMESS_ALTERID` (integer,default: 64)
 * `DENY_LAN_ACCESS` if set true, v2ray client can't access lan ip (boolean,default: "true")
 * `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
+* `ARUKAS_MODE` if you run image in arukas.io, this option must be true (boolean,default: "false")
 
 ## Related Projects
 - [v2ray/official](https://hub.docker.com/r/v2ray/official)
