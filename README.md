@@ -72,7 +72,7 @@ spec:
 ## v2ray client special settings
 * `Port` 443 (recommend)
 * `Network` ws
-* `Host` <DOMAIN>
+* `Host` your.domain
 * `Path` /v2ray
 * `Transport layer security` tls
 
