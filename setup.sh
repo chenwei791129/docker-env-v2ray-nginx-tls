@@ -1,10 +1,16 @@
 #!/bin/sh
 
-cp -f /tmp/default.conf /etc/nginx/conf.d/default.conf
+if [ ${ARUKAS_MODE} == false ]; then
+  cp -f /tmp/default.conf /etc/nginx/conf.d/default.conf
+else
+  echo '[Info] Run in arukas.io, use default-arukas.conf.'
+  cp -f /tmp/default-arukas.conf /etc/nginx/conf.d/default.conf
+fi
+
+# start nginx service
 nginx
 
 cp -f /etc/v2ray/config.json-default /etc/v2ray/config.json
-cp -f /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
 
 # Setup vmess
 echo '[Info] Protocal is VMess.'
@@ -30,14 +36,19 @@ if [ ${DENY_LAN_ACCESS} == true ]; then
   echo $(cat /etc/v2ray/config.json | jq '. += {"routing":{"rules":[{"type":"field","ip":["geoip:private"],"outboundTag":"blocked"}]}}') > /etc/v2ray/config.json
 fi
 
-if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
-  echo '[Info] Start set Weak Diffie-Hellman and the Logjam Attack:'
-  openssl dhparam -out /etc/nginx/cert/dhparam.pem ${DHPARAM_LENGTH}
-  echo '[Info] Start get cert:'
-  /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --keylength ec-384
-  echo '[Info] Start install cert:'
-  /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --capath /etc/nginx/cert/ca.pem --reloadcmd "nginx -s reload" --ecc
+if [ ${ARUKAS_MODE} == false ]; then
+  cp -f /tmp/v2ray-nginx-h2.conf /etc/nginx/conf.d/v2ray-nginx-h2.conf
+  if [ ! -f /etc/nginx/cert/cert.pem ] && [ ! -f /etc/nginx/cert/key.pem ] && [ ! -f /etc/nginx/cert/dhparam.pem ]; then
+    echo '[Info] Start set Weak Diffie-Hellman and the Logjam Attack:'
+    openssl dhparam -out /etc/nginx/cert/dhparam.pem ${DHPARAM_LENGTH}
+    echo '[Info] Start get cert:'
+    /root/.acme.sh/acme.sh --issue -d "${VMESS_HTTP2_DOMAIN}" -w /www --keylength ec-384
+    echo '[Info] Start install cert:'
+    /root/.acme.sh/acme.sh --install-cert -d "${VMESS_HTTP2_DOMAIN}" --key-file /etc/nginx/cert/key.pem --fullchain-file /etc/nginx/cert/cert.pem --capath /etc/nginx/cert/ca.pem --reloadcmd "nginx -s reload" --ecc
+  fi
 fi
+
+
 
 echo '[Debug] Dump config.json:'
 echo $(cat /etc/v2ray/config.json)
