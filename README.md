@@ -11,6 +11,10 @@ e.g. need 80 port to get let's encrypt cert
 ```shell
 $ docker run -d -p 80:80 -p 443:443 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e VMESS_HTTP2_DOMAIN="www.demo.com" awei/env-v2ray-nginx-tls
 ```
+e.g. run in arukas.io
+```shell
+$ docker run -d -p 80:80 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e ARUKAS_MODE="true" awei/env-v2ray-nginx-tls
+```
 deploy to kubernetes example (Need to match port forwarding 80 port to 30080 port):
 ```yaml
 apiVersion: v1
