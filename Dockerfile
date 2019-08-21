@@ -1,3 +1,6 @@
+#Experiment: Join nginx base image let dockerhub detection nginx version update
+FROM nginx:alpine
+
 FROM v2ray/official
 
 ENV VMESS_ID= \
