@@ -14,7 +14,12 @@ COPY config.json /etc/v2ray/config.json-default
 COPY setup.sh v2ray-nginx-h2.conf default.conf default-arukas.conf /tmp/
 COPY index.html /www/
 
-RUN apk add --update jq curl openssl socat nginx && \
+    # add mainline nginx package source,see http://nginx.org/en/linux_packages.html#Alpine
+RUN apk add --update curl && \
+    curl -o /etc/apk/keys/nginx_signing.rsa.pub https://nginx.org/keys/nginx_signing.rsa.pub && \
+    printf "%s%s%s\n" "http://nginx.org/packages/mainline/alpine/v" `egrep -o '^[0-9]+\.[0-9]+' /etc/alpine-release` "/main" >> /etc/apk/repositories && \
+    # install nginx and acme.sh
+    apk add --update jq openssl socat nginx && \
     curl https://get.acme.sh | sh && \
     mkdir -p /etc/nginx/cert && \
     mkdir -p /run/nginx && \
