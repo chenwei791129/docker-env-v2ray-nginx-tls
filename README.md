@@ -86,6 +86,9 @@ spec:
 * `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
 * `ARUKAS_MODE` if you run image in arukas.io, this option must be true (boolean,default: "false")
 
+### Option
+* Recommended with cloudflare CDN use
+
 ## Related Projects
 - [v2ray/official](https://hub.docker.com/r/v2ray/official)
 - [Neilpang/acme.sh](https://github.com/Neilpang/acme.sh)
