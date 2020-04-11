@@ -8,7 +8,8 @@ ENV VMESS_ID= \
     VMESS_HTTP2_DOMAIN= \
     DENY_LAN_ACCESS=true \
     DHPARAM_LENGTH=2048 \
-    ARUKAS_MODE=false
+    ARUKAS_MODE=false \
+    URL_PATH="/v2ray"
 
 COPY config.json /etc/v2ray/config.json-default
 COPY setup.sh v2ray-nginx-h2.conf default.conf default-arukas.conf /tmp/

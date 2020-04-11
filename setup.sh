@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# replace url path
+echo "$(cat /tmp/default-arukas.conf | sed "s#/v2ray#${URL_PATH}#g")" > /tmp/default-arukas.conf
+echo "$(cat /tmp/v2ray-nginx-h2.conf | sed "s#/v2ray#${URL_PATH}#g")" > /tmp/v2ray-nginx-h2.conf
+
 if [ ${ARUKAS_MODE} == false ]; then
   cp -f /tmp/default.conf /etc/nginx/conf.d/default.conf
 else
@@ -9,31 +13,30 @@ fi
 
 # start nginx service
 nginx
-
 cp -f /etc/v2ray/config.json-default /etc/v2ray/config.json
 
 # Setup vmess
 echo '[Info] Protocal is VMess.'
-echo $(cat /etc/v2ray/config.json | jq '.inbounds += [{"port":10086,"protocol":"vmess","settings":{"clients":[{"id":"60ca58e9-003e-4c01-98de-c2223ae49153","alterId":64}]}}]') > /etc/v2ray/config.json
+echo "$(cat /etc/v2ray/config.json | jq '.inbounds += [{"port":10086,"protocol":"vmess","settings":{"clients":[{"id":"60ca58e9-003e-4c01-98de-c2223ae49153","alterId":64}]}}]')" > /etc/v2ray/config.json
 
 if [ -n "${VMESS_ID}" ]; then
   echo '[Info] Setup id.'
-  echo $(cat /etc/v2ray/config.json | jq '.inbounds[0].settings.clients[0].id = "'${VMESS_ID}'"') > /etc/v2ray/config.json
+  echo "$(cat /etc/v2ray/config.json | jq '.inbounds[0].settings.clients[0].id = "'${VMESS_ID}'"')" > /etc/v2ray/config.json
 fi
 
 if [ -n "${VMESS_ALTERID}" ]; then
   echo '[Info] Setup alterId.'
-  echo $(cat /etc/v2ray/config.json | jq '.inbounds[0].settings.clients[0].alterId = '${VMESS_ALTERID}'') > /etc/v2ray/config.json
+  echo "$(cat /etc/v2ray/config.json | jq '.inbounds[0].settings.clients[0].alterId = '${VMESS_ALTERID}'')" > /etc/v2ray/config.json
 fi
 
-echo $(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"/v2ray"}}}') > /etc/v2ray/config.json
+echo "$(cat /etc/v2ray/config.json | jq '.inbounds[0] += {"streamSettings":{"network":"ws","wsSettings":{"path":"'${URL_PATH}'"}}}')" > /etc/v2ray/config.json
 
 if [ ${DENY_LAN_ACCESS} == true ]; then
   echo '[Info] Apply DENY LAN ACCESS.'
   # add blackhole outbound for private ip route rule
-  echo $(cat /etc/v2ray/config.json | jq '.outbounds += [{"protocol":"blackhole","settings":{},"tag":"blocked"}]') > /etc/v2ray/config.json
+  echo "$(cat /etc/v2ray/config.json | jq '.outbounds += [{"protocol":"blackhole","settings":{},"tag":"blocked"}]')" > /etc/v2ray/config.json
   # add private ip route rule
-  echo $(cat /etc/v2ray/config.json | jq '. += {"routing":{"rules":[{"type":"field","ip":["geoip:private"],"outboundTag":"blocked"}]}}') > /etc/v2ray/config.json
+  echo "$(cat /etc/v2ray/config.json | jq '. += {"routing":{"rules":[{"type":"field","ip":["geoip:private"],"outboundTag":"blocked"}]}}')" > /etc/v2ray/config.json
 fi
 
 if [ ${ARUKAS_MODE} == false ]; then
@@ -48,11 +51,11 @@ if [ ${ARUKAS_MODE} == false ]; then
   fi
 fi
 
-
-
 echo '[Debug] Dump config.json:'
-echo $(cat /etc/v2ray/config.json)
-echo "[Success] Your vmess domain is: ${VMESS_HTTP2_DOMAIN}"
+echo "$(cat /etc/v2ray/config.json)"
+if [ ${ARUKAS_MODE} == false ]; then
+  echo "[Success] Your vmess domain is: ${VMESS_HTTP2_DOMAIN}"
+fi
 echo "[Success] Your vmess ID is: $(cat /etc/v2ray/config.json | jq -r '.inbounds[0].settings.clients[0].id')"
 echo "[Success] Your vmess Alter ID is: $(cat /etc/v2ray/config.json | jq -r '.inbounds[0].settings.clients[0].alterId')"
-echo "[Success] Your vmess path is: /v2ray"
+echo "[Success] Your vmess path is: ${URL_PATH}"

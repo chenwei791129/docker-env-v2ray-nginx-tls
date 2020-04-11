@@ -85,6 +85,7 @@ spec:
 * `DENY_LAN_ACCESS` if set true, v2ray client can't access lan ip (boolean,default: "true")
 * `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
 * `ARUKAS_MODE` if you run image in arukas.io, this option must be true (boolean,default: "false")
+* `URL_PATH` URL path (string,default: "/v2ray")
 
 ### Option
 * Recommended with cloudflare CDN use
