@@ -12,6 +12,22 @@ $ docker pull ghcr.io/chenwei791129/env-v2ray-nginx-tls
 
 The Docker Hub image `awei/env-v2ray-nginx-tls` is no longer updated.
 
+The image runs [V2Fly](https://github.com/v2fly/v2ray-core) (the maintained
+continuation of V2Ray) v5, built from the release pinned in `v2ray/go.mod`,
+behind Alpine's nginx package. Dependabot keeps that release, the Alpine base
+image and the Go toolchain up to date; every merge to `master` and a weekly
+rebuild publish a new image for `linux/amd64` and `linux/arm64`.
+
+> **Upgrading from the v2ray/official based image:**
+> - V2Fly only accepts VMess AEAD authentication, so clients must set `alterId`
+>   to `0`. To temporarily keep legacy clients working, add
+>   `-e V2RAY_VMESS_AEAD_FORCED=false` and set `VMESS_ALTERID` to the clients'
+>   value.
+> - The fixed fallback VMess ID is gone: without `VMESS_ID` a random ID is
+>   generated on every container start, so always set `VMESS_ID`.
+> - Arguments passed to the container run as a command instead of the proxy
+>   (e.g. `docker run --rm -it ghcr.io/chenwei791129/env-v2ray-nginx-tls sh`).
+
 ```shell
 $ docker run -d -p <PORT>:<DOCKER-PORT> -e VMESS_ID="<UUID>" -e VMESS_HTTP2_DOMAIN="<DOMAIN>" ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
@@ -69,6 +85,8 @@ spec:
         env:
         - name: VMESS_ID
           value: "877e125d-1ef3-40ef-9329-b7ec62c1072c"
+        - name: VMESS_HTTP2_DOMAIN
+          value: "www.demo.com"
         - name: DENY_LAN_ACCESS
           value: "true"
         ports:
@@ -85,22 +103,23 @@ spec:
 * `Transport layer security` tls
 
 ### Necessary Environment Variables
-* `VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/)
-* `VMESS_HTTP2_DOMAIN` your domain (string)
+* `VMESS_ID` Set a UUID, see [www.uuidgenerator.net](https://www.uuidgenerator.net/) (when unset, a random one is generated and logged on every start)
+* `VMESS_HTTP2_DOMAIN` your domain (string, not needed when `ARUKAS_MODE=true`)
 
 ### Option Environment Variables
-* `VMESS_ALTERID` (integer,default: 64)
+* `VMESS_ALTERID` (integer,default: 0) only used by legacy clients together with `V2RAY_VMESS_AEAD_FORCED=false`
 * `DENY_LAN_ACCESS` if set true, v2ray client can't access lan ip (boolean,default: "true")
 * `DHPARAM_LENGTH` set Diffie-Hellman parameters (integer,default: 2048)
 * `ARUKAS_MODE` if you run image in arukas.io, this option must be true or use CloudFlare Proxied & Flexible mode (boolean,default: "false")
-* `URL_PATH` URL path (string,default: "/v2ray")
+* `URL_PATH` URL path (string,default: "/v2ray", letters, digits and `. _ ~ / -` only)
+* `ACME_SERVER` acme.sh CA used to issue the certificate (string,default: "letsencrypt")
 
 ### Option
 * Recommended with cloudflare CDN use
 
 ## Related Projects
-- [v2ray/official](https://hub.docker.com/r/v2ray/official)
-- [Neilpang/acme.sh](https://github.com/Neilpang/acme.sh)
+- [v2fly/v2ray-core](https://github.com/v2fly/v2ray-core)
+- [acmesh-official/acme.sh](https://github.com/acmesh-official/acme.sh)
 - [nginx/nginx](https://github.com/nginx/nginx)
 
 ## License
