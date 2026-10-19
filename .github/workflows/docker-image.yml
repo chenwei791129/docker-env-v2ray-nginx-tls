@@ -1,0 +1,28 @@
+name: Build and push image
+
+# Publishes ghcr.io/chenwei791129/env-v2ray-nginx-tls. The build itself lives in
+# chenwei791129/.github so the pinned action versions are maintained in exactly
+# one place across repositories. Pull requests only compile-check the image.
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build-and-push-image:
+    permissions:
+      contents: read
+      packages: write
+    uses: chenwei791129/.github/.github/workflows/build-and-push-image.yml@main
+    with:
+      # Short image name, matching the former Docker Hub repository
+      # (awei/env-v2ray-nginx-tls) rather than the docker- prefixed repository name.
+      image-name: chenwei791129/env-v2ray-nginx-tls
+      # The v2ray/official base image is linux/amd64 only.
+      platforms: linux/amd64
+      enable-latest-tag: false
+      additional-tags: |
+        type=raw,value=latest,enable={{is_default_branch}}
