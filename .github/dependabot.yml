@@ -1,9 +1,41 @@
 version: 2
 updates:
+  # Alpine runtime and Go builder images in the Dockerfile.
   - package-ecosystem: docker
     directory: /
     schedule:
       interval: weekly
+    commit-message:
+      prefix: build
+  # v2ray-core release built into the image, plus the modules v2ray/go.mod
+  # raises above upstream's versions to pick up security fixes sooner. Go
+  # records all of them as indirect requirements (v2ray-core is a tool), so
+  # they have to be allowed explicitly; other dependencies follow upstream.
+  # If a v2ray-core bump fails to build because it needs a newer Go, merge the
+  # golang image bump from the docker ecosystem first, then rebase it.
+  - package-ecosystem: gomod
+    directory: /v2ray
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-name: github.com/v2fly/v2ray-core/v5
+        dependency-type: all
+      - dependency-name: golang.org/x/crypto
+        dependency-type: all
+      - dependency-name: golang.org/x/net
+        dependency-type: all
+      - dependency-name: golang.org/x/text
+        dependency-type: all
+      - dependency-name: google.golang.org/grpc
+        dependency-type: all
+      # Security updates ignore dependency-type, so this keeps security PRs for
+      # every module. Version updates skip it: all modules here are indirect.
+      - dependency-type: direct
+    groups:
+      go-security-overrides:
+        patterns:
+          - golang.org/x/*
+          - google.golang.org/grpc
     commit-message:
       prefix: build
   - package-ecosystem: github-actions

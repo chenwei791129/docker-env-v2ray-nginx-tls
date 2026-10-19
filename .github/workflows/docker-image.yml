@@ -9,6 +9,10 @@ on:
     tags: ['v*']
   pull_request:
     branches: [master]
+  # Weekly rebuild (before the Monday Trivy scan) so Alpine package fixes reach
+  # the published image even when nothing was merged.
+  schedule:
+    - cron: "23 4 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -21,8 +25,10 @@ jobs:
       # Short image name, matching the former Docker Hub repository
       # (awei/env-v2ray-nginx-tls) rather than the docker- prefixed repository name.
       image-name: chenwei791129/env-v2ray-nginx-tls
-      # The v2ray/official base image is linux/amd64 only.
-      platforms: linux/amd64
+      platforms: linux/amd64,linux/arm64
+      # A new value per run invalidates the cached apk layer (see Dockerfile).
+      build-args: |
+        APK_REFRESH=${{ github.run_id }}-${{ github.run_attempt }}
       enable-latest-tag: false
       additional-tags: |
         type=raw,value=latest,enable={{is_default_branch}}
