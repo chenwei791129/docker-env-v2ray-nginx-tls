@@ -1,12 +1,12 @@
 name: Build and push image
 
-# Publishes ghcr.io/chenwei791129/env-v2ray-nginx-tls. The build itself lives in
-# chenwei791129/.github so the pinned action versions are maintained in exactly
-# one place across repositories. Pull requests only compile-check the image.
+# Publishes ghcr.io/chenwei791129/env-v2ray-nginx-tls, tagged with the V2Ray version it
+# runs. The build itself lives in chenwei791129/.github so its pinned action
+# versions are maintained in one place; only the checkout in the version job is
+# pinned here. Pull requests only compile-check the image.
 on:
   push:
     branches: [master]
-    tags: ['v*']
   pull_request:
     branches: [master]
   # Weekly rebuild (before the Monday Trivy scan) so Alpine package fixes reach
@@ -16,7 +16,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  # The V2Ray version built into the image, read from v2ray/go.mod, so the
+  # image can also be tagged with it (e.g. 5.54.2).
+  v2ray-version:
+    # Publish from master only (push, schedule, or a manual run on master);
+    # pull requests still build. build-and-push-image needs this job, so a
+    # manual run on another branch or tag is skipped instead of publishing an
+    # image without the V2Ray version tag.
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: v2ray/go.mod
+          sparse-checkout-cone-mode: false
+      - id: version
+        run: |
+          version="$(awk '$1 == "github.com/v2fly/v2ray-core/v5" { sub(/^v/, "", $2); print $2 }' v2ray/go.mod)"
+          # Also a valid image tag: digits, dots, and an optional -suffix.
+          if [[ ! "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error file=v2ray/go.mod::Cannot read the v2ray-core version (got '${version}')"
+            exit 1
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
   build-and-push-image:
+    needs: v2ray-version
     permissions:
       contents: read
       packages: write
@@ -30,5 +60,8 @@ jobs:
       build-args: |
         APK_REFRESH=${{ github.run_id }}-${{ github.run_attempt }}
       enable-latest-tag: false
+      # Image tags follow the V2Ray version, not repository release tags.
+      enable-semver-tags: false
       additional-tags: |
         type=raw,value=latest,enable={{is_default_branch}}
+        type=raw,value=${{ needs.v2ray-version.outputs.version }},enable={{is_default_branch}}

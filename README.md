@@ -10,6 +10,11 @@ Images are built by GitHub Actions and published to GitHub Container Registry:
 $ docker pull ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
 
+Tags: `latest` (also `master`) and the V2Ray version the image runs, e.g.
+`ghcr.io/chenwei791129/env-v2ray-nginx-tls:5.54.2`. The weekly rebuild refreshes the
+tags of the current V2Ray version with Alpine's latest package fixes; tags of
+older V2Ray versions are kept but no longer rebuilt.
+
 The Docker Hub image `awei/env-v2ray-nginx-tls` is no longer updated.
 
 The image runs [V2Fly](https://github.com/v2fly/v2ray-core) (the maintained
