@@ -4,16 +4,24 @@
 
 [View on Docker Hub](https://hub.docker.com/r/awei/env-v2ray-nginx-tls)
 
+Images are built by GitHub Actions and published to GitHub Container Registry:
+
 ```shell
-$ docker run -d -p <PORT>:<DOCKER-PORT> -e VMESS_ID="<UUID>" -e VMESS_HTTP2_DOMAIN="<DOMAIN>" awei/env-v2ray-nginx-tls
+$ docker pull ghcr.io/chenwei791129/env-v2ray-nginx-tls
+```
+
+The Docker Hub image `awei/env-v2ray-nginx-tls` is no longer updated.
+
+```shell
+$ docker run -d -p <PORT>:<DOCKER-PORT> -e VMESS_ID="<UUID>" -e VMESS_HTTP2_DOMAIN="<DOMAIN>" ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
 e.g. need 80 port to get let's encrypt cert
 ```shell
-$ docker run -d -p 80:80 -p 443:443 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e VMESS_HTTP2_DOMAIN="www.demo.com" awei/env-v2ray-nginx-tls
+$ docker run -d -p 80:80 -p 443:443 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e VMESS_HTTP2_DOMAIN="www.demo.com" ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
 e.g. run in arukas.io
 ```shell
-$ docker run -d -p 80:80 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e ARUKAS_MODE="true" awei/env-v2ray-nginx-tls
+$ docker run -d -p 80:80 -e VMESS_ID="877e125d-1ef3-40ef-9329-b7ec62c1072c" -e ARUKAS_MODE="true" ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
 deploy to kubernetes example (Need to match port forwarding 80 port to 30080 port):
 ```yaml
@@ -57,7 +65,7 @@ spec:
     spec:
       containers:
       - name: v2ray-1
-        image: awei/env-v2ray-nginx-tls:latest
+        image: ghcr.io/chenwei791129/env-v2ray-nginx-tls:latest
         env:
         - name: VMESS_ID
           value: "877e125d-1ef3-40ef-9329-b7ec62c1072c"
