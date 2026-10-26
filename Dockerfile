@@ -3,7 +3,7 @@
 # Build v2ray from the v2fly/v2ray-core release pinned in v2ray/go.mod, which
 # Dependabot keeps up to date. The prebuilt v2fly/v2fly-core image is not used
 # because it is published by hand and lags the GitHub releases.
-FROM --platform=$BUILDPLATFORM golang:1.27.2-alpine AS v2ray
+FROM --platform=$BUILDPLATFORM golang:1.27.3-alpine AS v2ray
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /src
