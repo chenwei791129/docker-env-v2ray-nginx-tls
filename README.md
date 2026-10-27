@@ -2,18 +2,11 @@
 ## How to use
 [![This image on DockerHub](https://img.shields.io/docker/pulls/awei/env-v2ray-nginx-tls.svg)](https://hub.docker.com/r/awei/env-v2ray-nginx-tls/)
 
-[View on Docker Hub](https://hub.docker.com/r/awei/env-v2ray-nginx-tls)
-
 Images are built by GitHub Actions and published to GitHub Container Registry:
 
 ```shell
 $ docker pull ghcr.io/chenwei791129/env-v2ray-nginx-tls
 ```
-
-Tags: `latest` (also `master`) and the V2Ray version the image runs, e.g.
-`ghcr.io/chenwei791129/env-v2ray-nginx-tls:5.54.2`. The weekly rebuild refreshes the
-tags of the current V2Ray version with Alpine's latest package fixes; tags of
-older V2Ray versions are kept but no longer rebuilt.
 
 The Docker Hub image `awei/env-v2ray-nginx-tls` is no longer updated.
 
