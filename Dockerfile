@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/go/pkg/mod \
 
 # nginx and acme.sh come from Alpine's packages: they are updated with the base
 # image and picked up by the weekly scheduled rebuild.
-FROM alpine:3.24.2
+FROM alpine:3.24.3
 
 ENV VMESS_ID= \
     VMESS_ALTERID=0 \
